@@ -36,7 +36,7 @@ entrypoint: "{}"
 if args.compute_config:
     content += 'compute_config: "{}"\n'.format(args.compute_config)
 
-if args.cluster_environment:
+if args.cluster_env:
     content += 'cluster_env: "{}"\n'.format(args.cluster_env)
 
 with tempfile.NamedTemporaryFile(mode="w") as f:
