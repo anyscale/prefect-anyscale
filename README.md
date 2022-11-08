@@ -22,7 +22,7 @@ def count_to(highest_number):
 if __name__ == "__main__":
     count_to(10)
 ```
-inside your workspace and connect to Prefect via `prefect login`. Please /do not/ use the Ray or Anyscale Client, i.e.
+inside your workspace and connect to Prefect via `prefect login`. Please *do not* use the Ray or Anyscale Client, i.e.
 do not use the `RayTaskRunner(address="ray://...")` or `RayTaskRunner(address="anyscale://...")` since these can
 cause various issues (version mismatches between client and cluster, loosing connection, slower data transfer and API
 calls between client and server etc).
