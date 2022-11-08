@@ -11,7 +11,7 @@ import tempfile
 logging.basicConfig(level=logging.INFO)
 
 parser = argparse.ArgumentParser(add_help=False)
-parser.add_argument("--cluster-environment", type=str)
+parser.add_argument("--cluster-env", type=str)
 parser.add_argument("--compute-config", type=str)
 args = parser.parse_args()
 
@@ -37,7 +37,7 @@ if args.compute_config:
     content += 'compute_config: "{}"\n'.format(args.compute_config)
 
 if args.cluster_environment:
-    content += 'cluster_environment: "{}"\n'.format(args.cluster_environment)
+    content += 'cluster_env: "{}"\n'.format(args.cluster_env)
 
 with tempfile.NamedTemporaryFile(mode="w") as f:
     f.write(content)
