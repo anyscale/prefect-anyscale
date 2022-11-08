@@ -1,10 +1,16 @@
 """
-Version 0.0.1 of the Anyscale Prefect Agent.
+Version 0.0.2 of the Anyscale Prefect Agent.
 """
 
+import argparse
 import os
 import subprocess
 import tempfile
+
+parser = argparse.ArgumentParser(add_help=False)
+parser.add_argument("--cluster-environment", type=str)
+parser.add_argument("--compute-config", type=str)
+args = parser.parse_args()
 
 api_url = os.environ.get("PREFECT_API_URL")
 api_key = os.environ.get("PREFECT_API_KEY")
@@ -23,6 +29,16 @@ cmd += " /home/ray/anaconda3/bin/python -m prefect.engine"
 content = """
 entrypoint: "{}"
 """.format(cmd)
+
+if args.compute_config:
+    content += """
+    compute_config: "{}"
+    """.format(args.compute_config)
+
+if args.cluster_environment:
+    content += """
+    cluster_environment: "{}"
+    """.format(args.cluster_environment)
 
 with tempfile.NamedTemporaryFile(mode="w") as f:
     f.write(content)
