@@ -8,6 +8,8 @@ import os
 import subprocess
 import tempfile
 
+logging.basicConfig(level=logging.INFO)
+
 parser = argparse.ArgumentParser(add_help=False)
 parser.add_argument("--cluster-environment", type=str)
 parser.add_argument("--compute-config", type=str)
