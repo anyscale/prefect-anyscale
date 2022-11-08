@@ -46,5 +46,5 @@ if args.cluster_environment:
 with tempfile.NamedTemporaryFile(mode="w") as f:
     f.write(content)
     f.flush()
-    logging.info("Submitting Anyscale Job with configuration", extra={"content": content})
+    logging.info(f"Submitting Anyscale Job with configuration '{content}'")
     subprocess.check_call(["anyscale", "job", "submit", f.name])
