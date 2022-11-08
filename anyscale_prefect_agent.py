@@ -1,7 +1,5 @@
 """
 Version 0.0.1 of the Anyscale Prefect Agent.
-
-It 
 """
 
 import os
