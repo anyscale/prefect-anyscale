@@ -34,14 +34,10 @@ entrypoint: "{}"
 """.format(cmd)
 
 if args.compute_config:
-    content += """
-    compute_config: "{}"
-    """.format(args.compute_config)
+    content += 'compute_config: "{}"\n'.format(args.compute_config)
 
 if args.cluster_environment:
-    content += """
-    cluster_environment: "{}"
-    """.format(args.cluster_environment)
+    content += 'cluster_environment: "{}"\n'.format(args.cluster_environment)
 
 with tempfile.NamedTemporaryFile(mode="w") as f:
     f.write(content)
