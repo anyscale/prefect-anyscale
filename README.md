@@ -4,8 +4,7 @@ This repository contains the integration of Prefect with Anyscale.
 
 ## Development Setup
 
-For development,
-we strongly recommend using Anyscale Workspaces together with [Prefect Ray](https://github.com/PrefectHQ/prefect-ray).
+For development, we strongly recommend using Anyscale Workspaces together with [Prefect Ray](https://github.com/PrefectHQ/prefect-ray).
 No further integration is needed and you can just run a Python script like
 ```python
 import time
@@ -64,7 +63,7 @@ prefect config view --hide-sources
 and create a `prefect-agent-service.yaml` file where you fill in the information just displayed in place of the `...`:
 ```yaml
 name: prefect-agent
-entrypoint: pip install prefect && PREFECT_API_URL="https://api.prefect.cloud/api/accounts/..." PREFECT_API_KEY="..." python start_anyscale_service.py
+entrypoint: pip install prefect && PREFECT_API_URL="https://api.prefect.cloud/api/accounts/..." PREFECT_API_KEY="..." python start_anyscale_service.py --queue test
 runtime_env:
   working_dir: https://github.com/anyscale/prefect-anyscale/archive/refs/tags/v0.0.2.zip
 healthcheck_url: "/healthcheck"
