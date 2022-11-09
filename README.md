@@ -69,6 +69,7 @@ runtime_env:
   working_dir: https://github.com/anyscale/prefect-anyscale/archive/refs/tags/v0.0.2.zip
 healthcheck_url: "/healthcheck"
 ```
+The `working_dir` contains the version of the Anyscale Prefect agent, which you can upgrade going forward as new versions are released.
 You can then start the service with
 ```bash
 anyscale service deploy prefect-agent-service.yam
@@ -76,4 +77,33 @@ anyscale service deploy prefect-agent-service.yam
 
 ### Creating a deployment
 
-Now we can go ahead and create a Prefect deployment.
+Now we can go ahead and create a Prefect deployment. First we create the yaml file with (this can e.g. be run from your laptop):
+```bash
+prefect deployment build prefect_test.py:main -n prefect_test -q test --storage-block s3/test-storage
+```
+Open the generated `yaml` file and add the following below `infra_overrides: {}`:
+```yaml
+infrastructure:
+  type: process
+  env: {}
+  labels: {}
+  name: null
+  command:
+  - python
+  - /home/ray/anyscale_prefect_agent.py
+  - --cluster-env
+  - liveo-large-workload
+  stream_output: true
+```
+where `liveo-large-workload` is the Anyscale cluster environment this workload will be run in (it needs `prefect` and `prefect_ray` installed).
+Now apply the deployment with
+```bash
+prefect deployment apply main-deployment.yaml
+```
+
+You can now schedule new runs with this deployment from the Prefect UI
+
+
+![set up prefect api token](./prefect_submit_run.png)
+
+and it will be executed as an Anyscale Job on an autoscaling Ray Cluster which has the same setup as the development setup described above.
