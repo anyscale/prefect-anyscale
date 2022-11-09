@@ -42,6 +42,8 @@ production and development close).
 
 ### Getting Started
 
+#### Setting up the Anyscale Prefect Service
+
 To get started, you should first start the Anyscale Prefect Service in your Anyscale Cloud. It will be connected
 to your Prefect UI, receive new work, convert it into Anyscale Jobs and run those inside of Anyscale. You can set
 up the service from your laptop, you just need the Anyscale CLI installed. Generate a long lived Prefect API token
@@ -49,3 +51,29 @@ from the Prefect UI and check the "Never Expire" checkmark (you can always rotat
 with the new token if that becomes necessary):
 
 ![set up prefect api token](./prefect_api_token.png)
+
+From your laptop, then log into Prefect by running the following from your shell (substitute the API token you just generated):
+```bash
+prefect cloud login -k pnu_XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+``
+
+We now need to create an Anyscale Service file for deploying the Anyscale Prefect Agent. First display the settings with
+```bash
+prefect config view --hide-sources
+```
+and create a `prefect-agent-service.yaml` file where you fill in the information just displayed in place of the `...`:
+```yaml
+name: prefect-agent
+entrypoint: pip install prefect && PREFECT_API_URL="https://api.prefect.cloud/api/accounts/..." PREFECT_API_KEY="..." python start_anyscale_service.py
+runtime_env:
+  working_dir: https://github.com/anyscale/prefect-anyscale/archive/refs/tags/v0.0.2.zip
+healthcheck_url: "/healthcheck"
+```
+You can then start the service with
+```bash
+anyscale service deploy prefect-agent-service.yam
+```
+
+### Creating a deployment
+
+Now we can go ahead and create a Prefect deployment.
