@@ -72,7 +72,7 @@ healthcheck_url: "/healthcheck"
 The `working_dir` contains the version of the Anyscale Prefect agent, which you can upgrade going forward as new versions are released.
 You can then start the service with
 ```bash
-anyscale service deploy prefect-agent-service.yam
+anyscale service deploy prefect-agent-service.yaml
 ```
 
 ### Creating a deployment
