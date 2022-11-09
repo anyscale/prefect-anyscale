@@ -30,4 +30,4 @@ jobs:
           envsubst < prefect-agent-service.yaml > prefect-agent-service.out
           anyscale service deploy prefect-agent-service.out
           prefect deployment build prefect_test.py:count_to -n prefect_test -q test --infra-block process/anyscale-infra --apply
-	  prefect deployment run count-to/prefect_test --param highest_number=5
+          prefect deployment run count-to/prefect_test --param highest_number=5
