@@ -23,4 +23,4 @@ jobs:
       - name: Test Prefect <> Anyscale Integration
         run: |
           envsubst < prefect-agent-service.yaml > prefect-agent-service.out
-	  anyscale service deploy prefect-agent-service.out
+          anyscale service deploy prefect-agent-service.out
