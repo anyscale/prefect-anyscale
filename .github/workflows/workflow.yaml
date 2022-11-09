@@ -29,5 +29,5 @@ jobs:
         run: |
           envsubst < prefect-agent-service.yaml > prefect-agent-service.out
           anyscale service deploy prefect-agent-service.out
-	  prefect deployment build prefect_test.py -n prefect_test -q test --infra-block anyscale-infra
-	  prefect deployment apply main-deployment.yaml
+          prefect deployment build prefect_test.py -n prefect_test -q test --infra-block anyscale-infra
+          prefect deployment apply main-deployment.yaml
