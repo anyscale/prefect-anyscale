@@ -21,11 +21,11 @@ jobs:
           python -m pip install --upgrade pip
           pip install anyscale ray prefect prefect_ray
       - name: Test Prefect <> Anyscale Integration
-        run: |
-          envsubst < prefect-agent-service.yaml > prefect-agent-service.out
-          anyscale service deploy prefect-agent-service.out
-	env:
+        env:
           ANYSCALE_HOST: ${{ secrets.ANYSCALE_HOST }}
           ANYSCALE_CLI_TOKEN: ${{ secrets.ANYSCALE_CLI_TOKEN }}
           PREFECT_API_URL: ${{ secrets.PREFECT_API_URL }}
           PREFECT_API_KEY: ${{ secrets.PREFECT_API_KEY }}
+        run: |
+          envsubst < prefect-agent-service.yaml > prefect-agent-service.out
+          anyscale service deploy prefect-agent-service.out
