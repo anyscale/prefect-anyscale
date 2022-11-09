@@ -55,7 +55,7 @@ with the new token if that becomes necessary):
 From your laptop, then log into Prefect by running the following from your shell (substitute the API token you just generated):
 ```bash
 prefect cloud login -k pnu_XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-``
+```
 
 We now need to create an Anyscale Service file for deploying the Anyscale Prefect Agent. First display the settings with
 ```bash
