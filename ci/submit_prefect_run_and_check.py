@@ -4,16 +4,15 @@ import uuid
 import prefect.deployments
 from prefect.client import get_client
 
-run_name = str(uuid.uuid4())
-prefect.deployments.run_deployment("count-to/prefect_test", parameters={"highest_number": 5}, flow_run_name=run_name)
+flow_run = prefect.deployments.run_deployment("count-to/prefect_test", parameters={"highest_number": 5})
 
-async def wait_for_run_complete(name):
+async def wait_for_run_complete(flow_id):
     async with get_client() as client:
         while True:
-            run = await client.read_flow_run(name)
+            run = await client.read_flow_run(flow_id)
             if run.state.is_completed():
-                break
+                return
             print(run.state)
             await asyncio.sleep(5.0)
     
-asyncio.run(wait_for_run_complete(run_name))
+asyncio.run(wait_for_run_complete(flow_run.id))
