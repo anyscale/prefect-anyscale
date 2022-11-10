@@ -4,6 +4,17 @@ import uuid
 import prefect.deployments
 from prefect.client import get_client
 
+from prefect_test import count_to
+
+deployment = prefect.deployments.Deployment.build_from_flow(
+    flow=count_to,
+    name="prefect_test",
+    work_queue_name="test",
+    storage="s3/test-storage-github",
+    infra="process/anyscale-infra"
+)
+deployment.apply()
+
 flow_run = prefect.deployments.run_deployment("count-to/prefect_test", parameters={"highest_number": 5})
 
 async def wait_for_run_complete(flow_id):
