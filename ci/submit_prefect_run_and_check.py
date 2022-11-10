@@ -1,5 +1,6 @@
 import asyncio
 import uuid
+import logging
 
 import prefect.deployments
 from prefect.client import get_client
