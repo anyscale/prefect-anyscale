@@ -30,4 +30,4 @@ jobs:
           envsubst < prefect-agent-service.yaml > prefect-agent-service.out
           anyscale service deploy prefect-agent-service.out
           prefect deployment build prefect_test.py:count_to -n prefect_test -q test --infra-block process/anyscale-infra --apply
-          python -m asyncio ci/submit_prefect_run_and_check.py
+          python ci/submit_prefect_run_and_check.py
