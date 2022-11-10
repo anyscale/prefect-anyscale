@@ -18,6 +18,9 @@ fs = s3fs.S3FileSystem()
 d = fs.ls('anyscale-prefect-integration-test')
 print("d", d)
 
+with s3.open('anyscale-prefect-integration-test/test-file', 'wb') as f:
+    f.write(b'hello')
+
 deployment = prefect.deployments.Deployment.build_from_flow(
     flow=count_to,
     name="prefect_test",
