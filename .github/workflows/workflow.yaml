@@ -40,4 +40,4 @@ jobs:
           anyscale service deploy prefect-agent-service.out
           pip install awscli
           aws sts get-caller-identity
-          python ci/submit_prefect_run_and_check.py
+          PYTHONPATH=$PYTHONPATH:. python ci/submit_prefect_run_and_check.py
