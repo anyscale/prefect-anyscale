@@ -20,6 +20,12 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           pip install anyscale ray prefect prefect_ray
+      - name: configure aws credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          role-to-assume: arn:aws:iam::959243851260:role/github-action-prefect-integration
+          role-session-name: s3access
+          aws-region: us-west-2
       - name: Test Prefect <> Anyscale Integration
         env:
           ANYSCALE_HOST: ${{ secrets.ANYSCALE_HOST }}
