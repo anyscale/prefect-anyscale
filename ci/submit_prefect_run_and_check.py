@@ -1,7 +1,7 @@
 import asyncio
 import uuid
 
-from prefect.deployments import Deployment
+import prefect.deployments
 from prefect.client import get_client
 
 run_name = str(uuid.uuid4())
