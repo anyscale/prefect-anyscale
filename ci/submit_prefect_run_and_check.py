@@ -13,6 +13,8 @@ async def wait_for_run_complete(flow_id):
             if run.state.is_completed():
                 return
             print(run.state)
+            if run.state.is_failed():
+                raise RuntimeError("Run failed")
             await asyncio.sleep(5.0)
     
 asyncio.run(wait_for_run_complete(flow_run.id))
