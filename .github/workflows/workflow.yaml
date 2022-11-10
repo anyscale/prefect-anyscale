@@ -40,5 +40,5 @@ jobs:
           anyscale service deploy prefect-agent-service.out
           pip install awscli
           aws sts get-caller-identity
-          prefect deployment build prefect_test.py:count_to -n prefect_test -q test --infra-block process/anyscale-infra --storage-block s3/test-storage-github --apply
+          S3FS_LOGGING_LEVEL=DEBUG prefect deployment build prefect_test.py:count_to -n prefect_test -q test --infra-block process/anyscale-infra --storage-block s3/test-storage-github --apply
           python ci/submit_prefect_run_and_check.py
