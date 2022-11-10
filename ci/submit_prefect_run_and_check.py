@@ -8,6 +8,9 @@ from prefect.infrastructure import Process
 
 from prefect_test import count_to
 
+logging.getLogger('boto3').setLevel(logging.DEBUG)
+logging.getLogger('botocore').setLevel(logging.DEBUG)
+
 deployment = prefect.deployments.Deployment.build_from_flow(
     flow=count_to,
     name="prefect_test",
