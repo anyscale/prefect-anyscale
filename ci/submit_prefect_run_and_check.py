@@ -15,7 +15,8 @@ logging.getLogger('boto3').setLevel(logging.DEBUG)
 logging.getLogger('botocore').setLevel(logging.DEBUG)
 
 fs = s3fs.S3FileSystem()
-fs.ls('anyscale-prefect-integration-test')
+d = fs.ls('anyscale-prefect-integration-test')
+print("d", d)
 
 deployment = prefect.deployments.Deployment.build_from_flow(
     flow=count_to,
