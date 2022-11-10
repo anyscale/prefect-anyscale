@@ -38,7 +38,7 @@ jobs:
         run: |
           envsubst < prefect-agent-service.yaml > prefect-agent-service.out
           anyscale service deploy prefect-agent-service.out
-          pip instal awscli
+          pip install awscli
           aws sts get-caller-identity
           prefect deployment build prefect_test.py:count_to -n prefect_test -q test --infra-block process/anyscale-infra --storage-block s3/test-storage-github --apply
           python ci/submit_prefect_run_and_check.py
