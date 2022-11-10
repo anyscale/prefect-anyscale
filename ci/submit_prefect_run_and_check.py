@@ -3,6 +3,8 @@ import uuid
 
 import prefect.deployments
 from prefect.client import get_client
+from prefect.filesystems import S3
+from prefect.infrastructure import Process
 
 from prefect_test import count_to
 
@@ -10,8 +12,8 @@ deployment = prefect.deployments.Deployment.build_from_flow(
     flow=count_to,
     name="prefect_test",
     work_queue_name="test",
-    storage="s3/test-storage-github",
-    infra="process/anyscale-infra"
+    storage=S3.load("test-storage-github"),
+    infra=Process.load("anyscale-infra")
 )
 deployment.apply()
 
