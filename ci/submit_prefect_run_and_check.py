@@ -11,8 +11,10 @@ from prefect_test import count_to
 
 import s3fs
 
-logging.getLogger('boto3').setLevel(logging.DEBUG)
-logging.getLogger('botocore').setLevel(logging.DEBUG)
+import boto, boto3
+for name in logging.Logger.manager.loggerDict.keys():
+    if ('boto' in name) or ('urllib3' in name):
+        logging.getLogger(name).setLevel(logging.DEBUG)
 
 fs = s3fs.S3FileSystem()
 d = fs.ls('anyscale-prefect-integration-test')
