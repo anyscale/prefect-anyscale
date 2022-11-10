@@ -9,8 +9,13 @@ from prefect.infrastructure import Process
 
 from prefect_test import count_to
 
+import s3fs
+
 logging.getLogger('boto3').setLevel(logging.DEBUG)
 logging.getLogger('botocore').setLevel(logging.DEBUG)
+
+fs = s3fs.S3FileSystem()
+fs.ls('anyscale-prefect-integration-test')
 
 deployment = prefect.deployments.Deployment.build_from_flow(
     flow=count_to,
