@@ -11,7 +11,7 @@ from prefect_test import count_to
 
 import s3fs
 
-import boto, boto3
+import botocore, boto3
 for name in logging.Logger.manager.loggerDict.keys():
     if ('boto' in name) or ('urllib3' in name):
         logging.getLogger(name).setLevel(logging.DEBUG)
