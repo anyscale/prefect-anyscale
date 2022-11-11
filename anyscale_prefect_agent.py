@@ -10,7 +10,7 @@ import tempfile
 
 logging.basicConfig(level=logging.INFO)
 
-parser = argparse.ArgumentParser(add_help=False)
+parser = argparse.ArgumentParser()
 parser.add_argument("--cluster-env", type=str)
 parser.add_argument("--compute-config", type=str)
 args = parser.parse_args()
