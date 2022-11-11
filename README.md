@@ -52,7 +52,7 @@ up the service from your laptop, you just need the Anyscale CLI installed. Gener
 from the Prefect UI and check the "Never Expire" checkmark (you can always rotate the token and restart the service
 with the new token if that becomes necessary):
 
-![set up prefect api token](./prefect_api_token.png)
+![set up prefect api token](./doc/prefect_api_token.png)
 
 From your laptop, then log into Prefect by running the following from your shell (substitute the API token you just generated):
 ```bash
@@ -86,7 +86,7 @@ anyscale service deploy prefect-agent-service.yaml
 
 Now create a Prefect infrastructure that will be used to run the deployments inside of Anyscale:
 
-![set up prefect infra](./set_up_prefect_infra.png)
+![set up prefect infra](./doc/set_up_prefect_infra.png)
 
 You can specify the cluster environment and compute environment used to run the workload with the `--cluster-env` and `--compute-config`
 variables of `anyscale_prefect_agent.py`. You can define many different such infrastructures for different environments. These cluster
@@ -100,6 +100,6 @@ prefect deployment build prefect_test.py:main -n prefect_test -q test --storage-
 
 You can now schedule new runs with this deployment from the Prefect UI
 
-![set up prefect api token](./prefect_submit_run.png)
+![submit prefect run](./doc/prefect_submit_run.png)
 
 and it will be executed as an Anyscale Job on an autoscaling Ray Cluster which has the same setup as the development setup described above.
