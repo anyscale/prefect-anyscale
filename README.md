@@ -84,6 +84,13 @@ You can then start the service with
 anyscale service deploy prefect-agent-service.yaml
 ```
 
+Now create a Prefect infrastructure that will be used to run the deployments inside of Anyscale:
+
+![set up prefect infra](./set_up_prefect_infra.png)
+
+You can specify the cluster environment and compute environment used to run the workload with the `--cluster-env` and `--compute-config`
+variables of `anyscale_prefect_agent.py`. You can define many different such infrastructures for different environments.
+
 #### Creating a deployment
 
 Now we can go ahead and create a Prefect deployment. First we create the yaml file with (this can e.g. be run from your laptop):
@@ -101,7 +108,7 @@ infrastructure:
   - python
   - /home/ray/anyscale_prefect_agent.py
   - --cluster-env
-  - liveo-large-workload
+  - prefect-test-environment
   stream_output: true
 ```
 where `liveo-large-workload` is the Anyscale cluster environment this workload will be run in (it needs `prefect` and `prefect_ray` installed).
