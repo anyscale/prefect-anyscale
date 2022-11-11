@@ -15,13 +15,13 @@ import s3fs
 
 import botocore, boto3
 
-logger = logging.getLogger()
-logger.addHandler(logging.StreamHandler())
-logger.setLevel(logging.DEBUG)
-logging.getLogger('boto3').setLevel(logging.DEBUG)
-logging.getLogger('botocore').setLevel(logging.DEBUG)
-logging.getLogger('s3transfer').setLevel(logging.DEBUG)
-logging.getLogger('urllib3').setLevel(logging.DEBUG)
+# logger = logging.getLogger()
+# logger.addHandler(logging.StreamHandler())
+# logger.setLevel(logging.DEBUG)
+# logging.getLogger('boto3').setLevel(logging.DEBUG)
+# logging.getLogger('botocore').setLevel(logging.DEBUG)
+# logging.getLogger('s3transfer').setLevel(logging.DEBUG)
+# logging.getLogger('urllib3').setLevel(logging.DEBUG)
 
 fs = s3fs.S3FileSystem(key=os.environ["AWS_ACCESS_KEY_ID"], secret=os.environ["AWS_SECRET_ACCESS_KEY"], token=os.environ["AWS_SESSION_TOKEN"])
 d = fs.ls('anyscale-prefect-integration-test')
