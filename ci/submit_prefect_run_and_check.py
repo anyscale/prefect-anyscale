@@ -22,7 +22,7 @@ logging.getLogger('botocore').setLevel(logging.DEBUG)
 logging.getLogger('s3transfer').setLevel(logging.DEBUG)
 logging.getLogger('urllib3').setLevel(logging.DEBUG)
 
-creds = subprocess.check_output(["aws", "sso", "get-role-credentials", "--output", "json"])
+creds = subprocess.check_output(["aws", "sts", "get-session-token", "--output", "json"])
 print("creds", creds)
 
 fs = s3fs.S3FileSystem()
