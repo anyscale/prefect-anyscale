@@ -1,6 +1,7 @@
 import asyncio
 import uuid
 import logging
+import os
 import subprocess
 
 import prefect.deployments
@@ -25,7 +26,7 @@ logging.getLogger('urllib3').setLevel(logging.DEBUG)
 creds = subprocess.check_output(["aws", "sts", "get-session-token", "--output", "json"])
 print("creds", creds)
 
-fs = s3fs.S3FileSystem()
+fs = s3fs.S3FileSystem(key=os.environ["AWS_ACCESS_KEY_ID"], secret=os.environ["AWS_SECRET_ACCESS_KEY"], token=os.environ["AWS_SESSION_TOKEN"])
 d = fs.ls('anyscale-prefect-integration-test')
 print("d", d)
 
