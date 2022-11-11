@@ -40,4 +40,7 @@ jobs:
           anyscale service deploy prefect-agent-service.out
           pip install awscli
           aws sts get-caller-identity
+          aws s3 ls "s3://anyscale-prefect-integration-test"
+          touch some-file
+          aws s3 cp ./some-file "s3://anyscale-prefect-integration-test/some-file"
           S3FS_LOGGING_LEVEL=DEBUG PYTHONPATH=$PYTHONPATH:. python ci/submit_prefect_run_and_check.py
