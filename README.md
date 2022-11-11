@@ -43,6 +43,9 @@ production and development close).
 
 #### Setting up the Anyscale Prefect Service
 
+This part only needs to be done once per Anyscale account to set up
+the Anyscale Prefect agent (and subsequently to update it if desired).
+
 To get started, you should first start the Anyscale Prefect Service in your Anyscale Cloud. It will be connected
 to your Prefect UI, receive new work, convert it into Anyscale Jobs and run those inside of Anyscale. You can set
 up the service from your laptop, you just need the Anyscale CLI installed. Generate a long lived Prefect API token
@@ -81,7 +84,7 @@ You can then start the service with
 anyscale service deploy prefect-agent-service.yaml
 ```
 
-### Creating a deployment
+#### Creating a deployment
 
 Now we can go ahead and create a Prefect deployment. First we create the yaml file with (this can e.g. be run from your laptop):
 ```bash
