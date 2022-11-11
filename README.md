@@ -97,6 +97,7 @@ environments will need `prefect`, `prefect_ray` and `s3fs` installed.
 Now we can go ahead and create a Prefect deployment:
 ```bash
 prefect deployment build prefect_test.py:main -n prefect_test -q test --storage-block s3/test-storage --infra-block process/anyscale-infra --apply
+```
 
 You can now schedule new runs with this deployment from the Prefect UI
 
