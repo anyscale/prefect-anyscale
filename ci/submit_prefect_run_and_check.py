@@ -1,6 +1,7 @@
 import asyncio
 import uuid
 import logging
+import subprocess
 
 import prefect.deployments
 from prefect.client import get_client
@@ -20,6 +21,9 @@ logging.getLogger('boto3').setLevel(logging.DEBUG)
 logging.getLogger('botocore').setLevel(logging.DEBUG)
 logging.getLogger('s3transfer').setLevel(logging.DEBUG)
 logging.getLogger('urllib3').setLevel(logging.DEBUG)
+
+creds = subprocess.check_output(["aws", "get-role-credentials", "--output", "json"])
+print("creds", creds)
 
 fs = s3fs.S3FileSystem()
 d = fs.ls('anyscale-prefect-integration-test')
