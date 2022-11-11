@@ -89,36 +89,16 @@ Now create a Prefect infrastructure that will be used to run the deployments ins
 ![set up prefect infra](./set_up_prefect_infra.png)
 
 You can specify the cluster environment and compute environment used to run the workload with the `--cluster-env` and `--compute-config`
-variables of `anyscale_prefect_agent.py`. You can define many different such infrastructures for different environments.
+variables of `anyscale_prefect_agent.py`. You can define many different such infrastructures for different environments. These cluster
+environments will need `prefect`, `prefect_ray` and `s3fs` installed.
 
-#### Creating a deployment
+#### Creating a deployment and scheduling the run
 
-Now we can go ahead and create a Prefect deployment. First we create the yaml file with (this can e.g. be run from your laptop):
+Now we can go ahead and create a Prefect deployment:
 ```bash
-prefect deployment build prefect_test.py:main -n prefect_test -q test --storage-block s3/test-storage
-```
-Open the generated `yaml` file and add the following below `infra_overrides: {}`:
-```yaml
-infrastructure:
-  type: process
-  env: {}
-  labels: {}
-  name: null
-  command:
-  - python
-  - /home/ray/anyscale_prefect_agent.py
-  - --cluster-env
-  - prefect-test-environment
-  stream_output: true
-```
-where `liveo-large-workload` is the Anyscale cluster environment this workload will be run in (it needs `prefect` and `prefect_ray` installed).
-Now apply the deployment with
-```bash
-prefect deployment apply main-deployment.yaml
-```
+prefect deployment build prefect_test.py:main -n prefect_test -q test --storage-block s3/test-storage --infra-block process/anyscale-infra --apply
 
 You can now schedule new runs with this deployment from the Prefect UI
-
 
 ![set up prefect api token](./prefect_submit_run.png)
 
