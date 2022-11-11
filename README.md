@@ -68,6 +68,13 @@ runtime_env:
   working_dir: https://github.com/anyscale/prefect-anyscale/archive/refs/tags/v0.0.2.zip
 healthcheck_url: "/healthcheck"
 ```
+
+**NOTE**: This will store your Prefect API token in the service
+definition, which can be accessed from the Anyscale UI.  If you want
+to avoid this, you can store the token in the AWS Secrets Manager (or
+another secret manager of your choice) and retrieve it from there in
+`start_anyscale_service.py`.
+
 The `working_dir` contains the version of the Anyscale Prefect agent, which you can upgrade going forward as new versions are released.
 You can then start the service with
 ```bash
