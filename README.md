@@ -68,7 +68,7 @@ and create a `prefect-agent-service.yaml` file where you fill in the information
 name: prefect-agent
 entrypoint: pip install prefect && PREFECT_API_URL="https://api.prefect.cloud/api/accounts/..." PREFECT_API_KEY="..." python start_anyscale_service.py --queue test
 runtime_env:
-  working_dir: https://github.com/anyscale/prefect-anyscale/archive/refs/tags/v0.0.3.zip
+  working_dir: https://github.com/anyscale/prefect-anyscale/archive/refs/tags/v0.0.4.zip
 healthcheck_url: "/healthcheck"
 ```
 
