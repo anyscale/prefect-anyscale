@@ -21,13 +21,6 @@ class PrefectAgentDeployment:
         anyscale_prefect_dir = os.path.dirname(os.path.realpath(__file__))
         shutil.copy(os.path.join(anyscale_prefect_dir, "anyscale_prefect_agent.py"), "/home/ray/")
 
-        # The prefect agent is timing out on the connection to the prefect control
-        # plane after about 24h of inactivity. If this happens, restart it.
-        while True:
-            logging.info(f"Starting prefect agent for queue {args.queue}")
-            try:
-                subprocess.check_call(["prefect", "agent", "start", "-q", args.queue])
-            except Exception:
-                logging.exception("Restarting prefect agent due to exception")
+        self.agent = subprocess.Popen((["prefect", "agent", "start", "-q", args.queue])
 
 serve.run(PrefectAgentDeployment.bind())
