@@ -16,7 +16,7 @@ serve.start(detached=True)
 
 app = FastAPI()
 
-@serve.deployment(route_prefix="/")
+@serve.deployment(route_prefix="/", num_replicas=1)
 @serve.ingress(app)
 class PrefectAgentDeployment:
     def __init__(self):
