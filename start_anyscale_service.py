@@ -26,8 +26,8 @@ class PrefectAgentDeployment:
 
         # Logfiles will be closed when the process exits
         prefect_agent_id = uuid.uuid4()
-        self.logfile_out = open(f"/tmp/prefect-agent-{prefect_agent_id}.out")
-        self.logfile_err = open(f"/tmp/prefect-agent-{prefect_agent_id}.err")
+        self.logfile_out = open(f"/tmp/prefect-agent-{prefect_agent_id}.out", "w")
+        self.logfile_err = open(f"/tmp/prefect-agent-{prefect_agent_id}.err", "w")
         self.agent = subprocess.Popen(["prefect", "agent", "start", "-q", args.queue], stdout=self.logfile_out, stderr=self.logfile_err)
 
     @app.get("/healthcheck")
