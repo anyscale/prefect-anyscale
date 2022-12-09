@@ -24,14 +24,9 @@ class PrefectAgentDeployment:
         anyscale_prefect_dir = os.path.dirname(os.path.realpath(__file__))
         shutil.copy(os.path.join(anyscale_prefect_dir, "anyscale_prefect_agent.py"), "/home/ray/")
 
-        # Logfiles will be closed when the process exits
-        prefect_agent_id = uuid.uuid4()
-        self.logfile_out = open(f"/tmp/prefect-agent-{prefect_agent_id}.out", "w")
-        self.logfile_err = open(f"/tmp/prefect-agent-{prefect_agent_id}.err", "w")
         self.agent = subprocess.Popen(
             ["prefect", "agent", "start", "-q", args.queue],
             env=dict(os.environ, **prefect_env),
-            stdout=self.logfile_out, stderr=self.logfile_err,
         )
 
     @app.get("/healthcheck")
