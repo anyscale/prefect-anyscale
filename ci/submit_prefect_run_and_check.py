@@ -18,7 +18,7 @@ deployment = prefect.deployments.Deployment.build_from_flow(
     name="prefect_test",
     work_queue_name="test",
     storage=S3.load("test-storage-github"),
-    infrastructure=AnyscaleJob.load("anyscale-infra")
+    infrastructure=AnyscaleJob.load("anyscale-job-infra")
 )
 deployment.apply()
 
