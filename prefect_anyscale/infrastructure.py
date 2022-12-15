@@ -5,7 +5,7 @@ from prefect.infrastructure.base import Infrastructure
 from pydantic import Field
 
 
-class AnscaleJob(Infrastructure):
+class AnyscaleJob(Infrastructure):
 
     type: Literal["anyscale_job"] = Field(
         default="anyscale_job", description="The type of infrastructure."
