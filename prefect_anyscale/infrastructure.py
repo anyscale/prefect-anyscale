@@ -8,8 +8,8 @@ from pydantic import Field
 
 class AnyscaleJob(Infrastructure):
 
-    type: Literal["anyscale_job"] = Field(
-        default="anyscale_job", description="The type of infrastructure."
+    type: Literal["anyscale-job"] = Field(
+        default="anyscale-job", description="The type of infrastructure."
     )
 
     compute_config: Union[None, str, Dict[str, str]] = Field(
@@ -20,6 +20,8 @@ class AnyscaleJob(Infrastructure):
     cluster_env: Union[None, str, Dict[str, str]] = Field(
         description="Cluster environment to use for the execution of the job."
     )
+
+    _block_type_name = "Anyscale Job"
 
     def preview(self):
         return " \\\n".join(
