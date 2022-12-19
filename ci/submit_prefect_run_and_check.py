@@ -7,7 +7,6 @@ import subprocess
 import prefect.deployments
 from prefect.client import get_client
 from prefect.filesystems import S3
-from prefect.infrastructure import Process
 
 from prefect_anyscale.infrastructure import AnyscaleJob
 

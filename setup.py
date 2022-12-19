@@ -8,7 +8,7 @@ setup(
     author_email="support@anyscale.com",
     keywords="prefect",
     url="https://github.com/anyscale/prefect-anyscale",
-    packages=find_packages(include=["prefect_ray"]),
+    packages=find_packages(include=["prefect_anyscale"]),
     python_requires=">=3.7",
     install_requires = [
         "prefect>=2.7.1",
