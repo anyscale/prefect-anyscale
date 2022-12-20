@@ -39,5 +39,6 @@ class PrefectAgentDeployment:
 
 serve.run(PrefectAgentDeployment.bind({
     "PREFECT_API_URL": os.environ["PREFECT_API_URL"],
-    "PREFECT_API_KEY": os.environ["PREFECT_API_KEY"]
+    "PREFECT_API_KEY": os.environ["PREFECT_API_KEY"],
+    "PREFECT_EXTRA_ENTRYPOINTS": "prefect_anyscale",
 }))
