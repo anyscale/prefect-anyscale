@@ -1,9 +1,14 @@
+import logging
+import os
 from typing import Dict, Union
-from typing_extensions import Literal
+import subprocess
+import sys
+import tempfile
 
-from prefect.infrastructure.base import Infrastructure
+from prefect.infrastructure.base import Infrastructure, InfrastructureResult
 from prefect.utilities.asyncutils import sync_compatible
 from pydantic import Field
+from typing_extensions import Literal
 
 
 class AnyscaleJob(Infrastructure):
@@ -34,4 +39,49 @@ class AnyscaleJob(Infrastructure):
         self,
         task_status = None,
     ):
-        pass
+        env = self._get_environment_variables()
+        api_url = env.get("PREFECT_API_URL")
+        api_key = env.get("PREFECT_API_KEY")
+        flow_run_id = env.get("PREFECT__FLOW_RUN_ID")
+
+        cmd = ""
+        if api_url:
+            cmd += "PREFECT_API_URL={}".format(api_url)
+        if api_key:
+            cmd += " PREFECT_API_KEY={}".format(api_key)
+        if flow_run_id:
+            cmd += " PREFECT__FLOW_RUN_ID={}".format(flow_run_id)
+
+        cmd += " /home/ray/anaconda3/bin/python -m prefect.engine"
+
+        content = """
+        entrypoint: "{}"
+        """.format(cmd)
+
+        if self.compute_config:
+            content += 'compute_config: "{}"\n'.format(self.compute_config)
+
+        if self.cluster_env:
+            content += 'cluster_env: "{}"\n'.format(self.cluster_env)
+
+        with tempfile.NamedTemporaryFile(mode="w") as f:
+            f.write(content)
+            f.flush()
+            logging.info(f"Submitting Anyscale Job with configuration '{content}'")
+            process = subprocess.check_call(["anyscale", "job", "submit", f.name])
+
+        return AnyscaleJobResult(
+            status_code=process.returncode, identifier=str(process.pid)
+        )
+
+    def _get_environment_variables(self, include_os_environ: bool = True):
+        os_environ = os.environ if include_os_environ else {}
+        # The base environment must override the current environment or
+        # the Prefect settings context may not be respected
+        env = {**os_environ, **self._base_environment(), **self.env}
+
+        # Drop null values allowing users to "unset" variables
+        return {key: value for key, value in env.items() if value is not None}
+
+class AnyscaleJobResult(InfrastructureResult):
+    """Contains information about the final state of a completed process"""
