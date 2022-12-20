@@ -68,10 +68,10 @@ class AnyscaleJob(Infrastructure):
             f.write(content)
             f.flush()
             logging.info(f"Submitting Anyscale Job with configuration '{content}'")
-            process = subprocess.check_call(["anyscale", "job", "submit", f.name])
+            returncode = subprocess.check_call(["anyscale", "job", "submit", f.name])
 
         return AnyscaleJobResult(
-            status_code=process.returncode, identifier=str(process.pid)
+            status_code=returncode, identifier=""
         )
 
     def _get_environment_variables(self, include_os_environ: bool = True):
