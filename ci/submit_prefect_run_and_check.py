@@ -1,14 +1,10 @@
 import asyncio
-import uuid
-import logging
-import os
-import subprocess
 
 import prefect.deployments
 from prefect.client import get_client
 from prefect.filesystems import S3
 
-from prefect_anyscale.infrastructure import AnyscaleJob
+from prefect_anyscale import AnyscaleJob
 
 from prefect_test import count_to
 
