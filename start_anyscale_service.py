@@ -21,9 +21,6 @@ app = FastAPI()
 @serve.ingress(app)
 class PrefectAgentDeployment:
     def __init__(self, prefect_env):
-        anyscale_prefect_dir = os.path.dirname(os.path.realpath(__file__))
-        shutil.copy(os.path.join(anyscale_prefect_dir, "anyscale_prefect_agent.py"), "/home/ray/")
-
         self.agent = subprocess.Popen(
             ["prefect", "agent", "start", "-q", args.queue],
             env=dict(os.environ, **prefect_env),

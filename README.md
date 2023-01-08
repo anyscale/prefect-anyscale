@@ -88,9 +88,7 @@ Now create a Prefect infrastructure that will be used to run the deployments ins
 
 ![set up prefect infra](./doc/set_up_prefect_infra.png)
 
-You can specify the cluster environment and compute environment used to run the workload with the `--cluster-env` and `--compute-config`
-variables of `anyscale_prefect_agent.py`. You can define many different such infrastructures for different environments. These cluster
-environments will need `prefect`, `prefect_ray` and `s3fs` installed.
+TODO: Update this!
 
 #### Creating a deployment and scheduling the run
 
