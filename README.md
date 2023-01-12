@@ -66,7 +66,7 @@ prefect config view --hide-sources
 and create a `prefect-agent-service.yaml` file where you fill in the information just displayed in place of the `...`:
 ```yaml
 name: prefect-agent
-entrypoint: pip install prefect && PREFECT_API_URL="https://api.prefect.cloud/api/accounts/..." PREFECT_API_KEY="..." python start_anyscale_service.py --queue test
+entrypoint: pip install prefect-anyscale && PREFECT_API_URL="https://api.prefect.cloud/api/accounts/..." PREFECT_API_KEY="..." python start_anyscale_service.py --queue test
 runtime_env:
   working_dir: https://github.com/anyscale/prefect-anyscale/archive/refs/tags/v0.1.0.zip
 healthcheck_url: "/healthcheck"
