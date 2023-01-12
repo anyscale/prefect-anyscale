@@ -68,7 +68,7 @@ and create a `prefect-agent-service.yaml` file where you fill in the information
 name: prefect-agent
 entrypoint: pip install prefect && PREFECT_API_URL="https://api.prefect.cloud/api/accounts/..." PREFECT_API_KEY="..." python start_anyscale_service.py --queue test
 runtime_env:
-  working_dir: https://github.com/anyscale/prefect-anyscale/archive/refs/tags/v0.0.6.zip
+  working_dir: https://github.com/anyscale/prefect-anyscale/archive/refs/tags/v0.1.0.zip
 healthcheck_url: "/healthcheck"
 ```
 
@@ -84,19 +84,32 @@ You can then start the service with
 anyscale service deploy prefect-agent-service.yaml
 ```
 
-Now create a Prefect infrastructure that will be used to run the deployments inside of Anyscale:
-
-![set up prefect infra](./doc/set_up_prefect_infra.png)
-
-You can specify the cluster environment and compute environment used to run the workload with the `--cluster-env` and `--compute-config`
-variables of `anyscale_prefect_agent.py`. You can define many different such infrastructures for different environments. These cluster
-environments will need `prefect`, `prefect_ray` and `s3fs` installed.
+Now create a Prefect infrastructure that will be used to run the deployments inside of Anyscale. You can do this
+by running `pip install prefect-anyscale` and then in a Python interpreter
+```python
+import prefect_anyscale
+infra = prefect_anyscale.AnyscaleJob(cluster_env="prefect-test-environment")
+infra.save("test-infra")
+```
 
 #### Creating a deployment and scheduling the run
 
 Now we can go ahead and create a Prefect deployment:
-```bash
-prefect deployment build prefect_test.py:main -n prefect_test -q test --storage-block s3/test-storage --infra-block process/anyscale-infra --apply
+```python
+import prefect
+from prefect.filesystems import S3
+from prefect_anyscale import AnyscaleJob
+
+from prefect_test import count_to
+
+deployment = prefect.deployments.Deployment.build_from_flow(
+    flow=count_to,
+    name="prefect_test",
+    work_queue_name="test",
+    storage=S3.load("test-storage"),
+    infrastructure=AnyscaleJob.load("test-infra")
+)
+deployment.apply()
 ```
 
 You can now schedule new runs with this deployment from the Prefect UI

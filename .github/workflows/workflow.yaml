@@ -36,6 +36,7 @@ jobs:
           PREFECT_API_URL: ${{ secrets.PREFECT_API_URL }}
           PREFECT_API_KEY: ${{ secrets.PREFECT_API_KEY }}
         run: |
+          pip install -e .
           envsubst < ci/prefect-agent-service-ci.yaml > /tmp/prefect-agent-service.out
           anyscale service deploy /tmp/prefect-agent-service.out
           PYTHONPATH=$PYTHONPATH:. python ci/submit_prefect_run_and_check.py

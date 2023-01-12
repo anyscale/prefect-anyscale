@@ -1,12 +1,8 @@
 import argparse
-import logging
 import os
-import shutil
 import subprocess
-import uuid
 
 from fastapi import FastAPI
-import ray
 from ray import serve
 
 parser = argparse.ArgumentParser()
@@ -21,9 +17,6 @@ app = FastAPI()
 @serve.ingress(app)
 class PrefectAgentDeployment:
     def __init__(self, prefect_env):
-        anyscale_prefect_dir = os.path.dirname(os.path.realpath(__file__))
-        shutil.copy(os.path.join(anyscale_prefect_dir, "anyscale_prefect_agent.py"), "/home/ray/")
-
         self.agent = subprocess.Popen(
             ["prefect", "agent", "start", "-q", args.queue],
             env=dict(os.environ, **prefect_env),
@@ -39,5 +32,6 @@ class PrefectAgentDeployment:
 
 serve.run(PrefectAgentDeployment.bind({
     "PREFECT_API_URL": os.environ["PREFECT_API_URL"],
-    "PREFECT_API_KEY": os.environ["PREFECT_API_KEY"]
+    "PREFECT_API_KEY": os.environ["PREFECT_API_KEY"],
+    "PREFECT_EXTRA_ENTRYPOINTS": "prefect_anyscale",
 }))
