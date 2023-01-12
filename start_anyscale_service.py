@@ -1,12 +1,8 @@
 import argparse
-import logging
 import os
-import shutil
 import subprocess
-import uuid
 
 from fastapi import FastAPI
-import ray
 from ray import serve
 
 parser = argparse.ArgumentParser()
