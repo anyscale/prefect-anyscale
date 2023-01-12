@@ -55,8 +55,9 @@ class AnyscaleJob(Infrastructure):
         cmd += " /home/ray/anaconda3/bin/python -m prefect.engine"
 
         content = """
+        name: "{}"
         entrypoint: "{}"
-        """.format(cmd)
+        """.format(flow_run_id, cmd)
 
         if self.compute_config:
             content += 'compute_config: "{}"\n'.format(self.compute_config)
@@ -69,6 +70,9 @@ class AnyscaleJob(Infrastructure):
             f.flush()
             logging.info(f"Submitting Anyscale Job with configuration '{content}'")
             returncode = subprocess.check_call(["anyscale", "job", "submit", f.name])
+
+        if task_status:
+            task_status.started(flow_run_id)
 
         return AnyscaleJobResult(
             status_code=returncode, identifier=""
@@ -85,3 +89,4 @@ class AnyscaleJob(Infrastructure):
 
 class AnyscaleJobResult(InfrastructureResult):
     """Contains information about the final state of a completed process"""
+    pass
