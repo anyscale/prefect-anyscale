@@ -54,10 +54,13 @@ class AnyscaleJob(Infrastructure):
 
         cmd += " /home/ray/anaconda3/bin/python -m prefect.engine"
 
+        # Link the Job on the Anyscale UI with the prefect flow run
+        job_name = "prefect-job-" + flow_run_id
+
         content = """
         name: "{}"
         entrypoint: "{}"
-        """.format(flow_run_id, cmd)
+        """.format(job_name, cmd)
 
         if self.compute_config:
             content += 'compute_config: "{}"\n'.format(self.compute_config)
@@ -72,7 +75,7 @@ class AnyscaleJob(Infrastructure):
             returncode = subprocess.check_call(["anyscale", "job", "submit", f.name])
 
         if task_status:
-            task_status.started(flow_run_id)
+            task_status.started(job_name)
 
         return AnyscaleJobResult(
             status_code=returncode, identifier=""
