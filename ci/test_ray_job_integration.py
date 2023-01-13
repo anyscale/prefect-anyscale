@@ -14,7 +14,7 @@ deployment = prefect.deployments.Deployment.build_from_flow(
     name="prefect_test",
     work_queue_name="test",
     storage=S3.load("test-storage-github"),
-    infrastructure=RayJob()
+    infrastructure=RayJob.load("ray-infra"),
 )
 deployment.apply()
 
