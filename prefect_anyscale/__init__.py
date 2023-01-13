@@ -1,5 +1,6 @@
-from prefect_anyscale.infrastructure import AnyscaleJob
+from prefect_anyscale.infrastructure import AnyscaleJob, RayJob
 
 __all__ = [
-    "AnyscaleJob"
+    "AnyscaleJob",
+    "RayJob",
 ]
