@@ -107,6 +107,9 @@ class RayJob(AnyscaleInfrastructure):
 
     _block_type_name = "Ray Job"
 
+    def preview(self):
+        return "RayJob"
+
     @sync_compatible
     async def run(
         self,

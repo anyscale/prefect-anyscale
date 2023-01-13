@@ -40,3 +40,4 @@ jobs:
           envsubst < ci/prefect-agent-service-ci.yaml > /tmp/prefect-agent-service.out
           anyscale service deploy /tmp/prefect-agent-service.out
           PYTHONPATH=$PYTHONPATH:. python ci/submit_prefect_run_and_check.py
+          PYTHONPATH=$PYTHONPATH:. python ci/test_ray_job_integration.py
