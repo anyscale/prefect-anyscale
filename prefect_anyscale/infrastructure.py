@@ -52,7 +52,7 @@ class AnyscaleJob(Infrastructure):
         if flow_run_id:
             cmd += " PREFECT__FLOW_RUN_ID={}".format(flow_run_id)
 
-        cmd += " /home/ray/anaconda3/bin/python -m prefect.engine"
+        cmd += " python -m prefect.engine"
 
         # Link the Job on the Anyscale UI with the prefect flow run
         job_name = "prefect-job-" + flow_run_id
@@ -68,14 +68,14 @@ class AnyscaleJob(Infrastructure):
         if self.cluster_env:
             content += 'cluster_env: "{}"\n'.format(self.cluster_env)
 
+        if task_status:
+            task_status.started(job_name)
+
         with tempfile.NamedTemporaryFile(mode="w") as f:
             f.write(content)
             f.flush()
             logging.info(f"Submitting Anyscale Job with configuration '{content}'")
             returncode = subprocess.check_call(["anyscale", "job", "submit", f.name])
-
-        if task_status:
-            task_status.started(job_name)
 
         return AnyscaleJobResult(
             status_code=returncode, identifier=""
