@@ -27,7 +27,7 @@ jobs:
         uses: aws-actions/configure-aws-credentials@v1
         with:
           role-to-assume: arn:aws:iam::959243851260:role/github-action-prefect-integration
-          role-session-name: s3access
+          role-session-name: s3accessRoleTest
           aws-region: us-west-2
       - name: Test Prefect <> Anyscale Integration
         env:
