@@ -1,6 +1,10 @@
-name: prefect-agent-19
-entrypoint: pip install prefect-anyscale && PREFECT_API_URL=$PREFECT_API_URL PREFECT_API_KEY=$PREFECT_API_KEY python start_anyscale_service.py --queue test
-runtime_env:
-  working_dir: .
-  upload_path: "s3://anyscale-prefect-integration-test/github-working-dir/"
-healthcheck_url: "/healthcheck"
+name: prefect-agent-20
+ray_serve_config:
+  import_path: start_anyscale_service:entrypoint
+  runtime_env:
+    env_vars:
+      PREFECT_API_URL: $PREFECT_API_URL
+      PREFECT_API_KEY: $PREFECT_API_KEY
+    pip: ["prefect-anyscale"]
+    working_dir: .
+    upload_path: "s3://anyscale-prefect-integration-test/github-working-dir/"
