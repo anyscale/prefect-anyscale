@@ -5,10 +5,6 @@ import subprocess
 from fastapi import FastAPI
 from ray import serve
 
-# parser = argparse.ArgumentParser()
-# parser.add_argument("--queue", type=str)
-# args = parser.parse_args()
-
 serve.start(detached=True)
 
 app = FastAPI()
@@ -19,7 +15,7 @@ class PrefectAgentDeployment:
     def __init__(self, prefect_env):
         self.agent = subprocess.Popen(
             # ["prefect", "agent", "start", "-q", args.queue],
-            ["prefect", "agent", "start", "-q", "test"],
+            ["prefect", "agent", "start", "-q", prefect_env["ANYSCALE_PREFECT_QUEUE"]],
             env=dict(os.environ, **prefect_env),
         )
 
@@ -30,14 +26,10 @@ class PrefectAgentDeployment:
         else:
             raise RuntimeError("Prefect agent died")
 
-# serve.run(PrefectAgentDeployment.bind({
-#     "PREFECT_API_URL": os.environ["PREFECT_API_URL"],
-#     "PREFECT_API_KEY": os.environ["PREFECT_API_KEY"],
-#     "PREFECT_EXTRA_ENTRYPOINTS": "prefect_anyscale",
-# }))
 
 entrypoint = PrefectAgentDeployment.bind({
     "PREFECT_API_URL": os.environ["PREFECT_API_URL"],
     "PREFECT_API_KEY": os.environ["PREFECT_API_KEY"],
     "PREFECT_EXTRA_ENTRYPOINTS": "prefect_anyscale",
+    "ANYSCALE_PREFECT_QUEUE": os.environ["ANYSCALE_PREFECT_QUEUE"],
 })
