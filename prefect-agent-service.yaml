@@ -1,5 +1,10 @@
-name: prefect-agent-10
-entrypoint: pip install prefect-anyscale && PREFECT_API_URL=$PREFECT_API_URL PREFECT_API_KEY=$PREFECT_API_KEY python start_anyscale_service.py --queue test
-runtime_env:
-  working_dir: https://github.com/anyscale/prefect-anyscale/archive/refs/tags/v0.1.0.zip
-healthcheck_url: "/healthcheck"
+name: prefect-agent
+ray_serve_config:
+  import_path: start_anyscale_service:entrypoint
+  runtime_env:
+    env_vars:
+      PREFECT_API_URL: $PREFECT_API_URL
+      PREFECT_API_KEY: $PREFECT_API_KEY
+      ANYSCALE_PREFECT_QUEUE: test
+    pip: ["prefect-anyscale"]
+    working_dir: https://github.com/anyscale/prefect-anyscale/archive/refs/tags/v0.2.0.zip
