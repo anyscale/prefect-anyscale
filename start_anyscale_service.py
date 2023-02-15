@@ -14,7 +14,6 @@ app = FastAPI()
 class PrefectAgentDeployment:
     def __init__(self, prefect_env):
         self.agent = subprocess.Popen(
-            # ["prefect", "agent", "start", "-q", args.queue],
             ["prefect", "agent", "start", "-q", prefect_env["ANYSCALE_PREFECT_QUEUE"]],
             env=dict(os.environ, **prefect_env),
         )
