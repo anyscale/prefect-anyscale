@@ -58,9 +58,9 @@ class AnyscaleJob(Infrastructure):
         job_name = "prefect-job-" + flow_run_id
 
         content = """
-        name: "{}"
-        entrypoint: "{}"
-        """.format(job_name, cmd)
+name: "{}"
+entrypoint: "{}"
+""".format(job_name, cmd)
 
         if self.compute_config:
             content += 'compute_config: "{}"\n'.format(self.compute_config)
