@@ -25,6 +25,8 @@ class PrefectAgentDeployment:
         else:
             raise RuntimeError("Prefect agent died")
 
+if os.environ.get("ANYSCALE_PREFECT_DEVELOPMENT", "0") == "1":
+    subprocess.check_call(["pip", "install", "-e", "."])
 
 entrypoint = PrefectAgentDeployment.bind({
     "PREFECT_API_URL": os.environ["PREFECT_API_URL"],
