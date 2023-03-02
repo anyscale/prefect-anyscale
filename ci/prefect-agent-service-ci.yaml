@@ -1,4 +1,4 @@
-name: prefect-agent-25
+name: prefect-agent-26
 cloud: "anyscale_v2_default_cloud"
 ray_serve_config:
   import_path: start_anyscale_service:entrypoint
@@ -7,6 +7,6 @@ ray_serve_config:
       PREFECT_API_URL: $PREFECT_API_URL
       PREFECT_API_KEY: $PREFECT_API_KEY
       ANYSCALE_PREFECT_QUEUE: test
-      ANYSCALE_PREFECT_DEVELOPMENT: 1
+      ANYSCALE_PREFECT_DEVELOPMENT: "1"
     working_dir: .
     upload_path: "s3://anyscale-prefect-integration-test/github-working-dir/"
