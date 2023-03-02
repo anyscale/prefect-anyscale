@@ -125,7 +125,7 @@ and it will be executed as an Anyscale Job on an autoscaling Ray Cluster which h
 
 #### Overriding properties of the infra block
 
-You can override properties of the Anyscale infra block at runtime like this:
+You can override properties of the Anyscale infra block in a deployment like this
 
 ```python
 import prefect
