@@ -122,3 +122,25 @@ You can now schedule new runs with this deployment from the Prefect UI
 ![submit prefect run](./doc/prefect_submit_run.png)
 
 and it will be executed as an Anyscale Job on an autoscaling Ray Cluster which has the same setup as the development setup described above.
+
+#### Overriding properties of the infra block
+
+You can override properties of the Anyscale infra block in a deployment like this
+
+```python
+import prefect
+from prefect.filesystems import S3
+from prefect_anyscale import AnyscaleJob
+
+from prefect_test import count_to
+
+deployment = prefect.deployments.Deployment.build_from_flow(
+    flow=count_to,
+    name="prefect_test_custom",
+    work_queue_name="test",
+    storage=S3.load("test-storage"),
+    infrastructure=AnyscaleJob.load("test-infra"),
+    infra_overrides={"compute_config": "test-compute-config"}
+)
+deployment.apply()
+```
