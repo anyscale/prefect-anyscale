@@ -12,9 +12,10 @@ def get_prefect_secret_environment():
     aws_secret_id = os.environ.get("ANYSCALE_PREFECT_AWS_SECRET_ID")
     if aws_secret_id:
         import boto3
-        client = boto3.client("secretsmanager")
-        response = client.get_secret_value(
-            SecretId=aws_secret_id, region=os.environ["ANYSCALE_PREFECT_AWS_REGION"])
+        client = boto3.client(
+            "secretsmanager", region_name=os.environ["ANYSCALE_PREFECT_AWS_REGION"]
+        )
+        response = client.get_secret_value(SecretId=aws_secret_id)
         return {
             "PREFECT_API_KEY": response["SecretString"],
             "ANYSCALE_PREFECT_AWS_SECRET_ID": aws_secret_id,
