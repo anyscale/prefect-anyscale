@@ -2,7 +2,6 @@ import logging
 import os
 from typing import Dict, Union
 import subprocess
-import sys
 import tempfile
 
 from prefect.infrastructure.base import Infrastructure, InfrastructureResult
@@ -44,10 +43,18 @@ class AnyscaleJob(Infrastructure):
         api_key = env.get("PREFECT_API_KEY")
         flow_run_id = env.get("PREFECT__FLOW_RUN_ID")
 
+        aws_secret_id = env.get("ANYSCALE_PREFECT_AWS_SECRET_ID")
+
         cmd = ""
         if api_url:
             cmd += "PREFECT_API_URL={}".format(api_url)
-        if api_key:
+        if aws_secret_id:
+            # If we use the AWS secret manager to pass the PREFECT_API_KEY
+            # through, we will retrieve the API key when the job gets executed.
+            aws_region = env.get("ANYSCALE_PREFECT_AWS_REGION")
+            cmd += " PREFECT_API_KEY=`aws secretsmanager get-secret-value --secret-id {} --region {} --output=text --query=SecretString`".format(aws_secret_id, aws_region)
+        elif api_key:
+            logging.warn("Your PREFECT_API_KEY is currently stored in plain text. Consider using a secret manager to store your secrets.")
             cmd += " PREFECT_API_KEY={}".format(api_key)
         if flow_run_id:
             cmd += " PREFECT__FLOW_RUN_ID={}".format(flow_run_id)

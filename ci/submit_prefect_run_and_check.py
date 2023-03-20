@@ -1,3 +1,4 @@
+import argparse
 import asyncio
 
 import prefect.deployments
@@ -8,10 +9,14 @@ from prefect_anyscale import AnyscaleJob
 
 from prefect_test import count_to
 
+parser = argparse.ArgumentParser()
+parser.add_argument("--queue", help="prefect queue to submit to")
+args = parser.parse_args()
+
 deployment = prefect.deployments.Deployment.build_from_flow(
     flow=count_to,
     name="prefect_test",
-    work_queue_name="test",
+    work_queue_name=args.queue,
     storage=S3.load("test-storage-github"),
     infrastructure=AnyscaleJob.load("anyscale-job-infra"),
     infra_overrides={"compute_config": "test-compute-config"},

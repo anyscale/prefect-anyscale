@@ -144,3 +144,28 @@ deployment = prefect.deployments.Deployment.build_from_flow(
 )
 deployment.apply()
 ```
+#### Using the AWS Secrets Manager for storing the PREFECT_API_KEY
+
+We recommend using the AWS Secrets Manager for storing your PREFECT_API_KEY token. Store your
+`PREFECT_API_KEY` secret as a Plaintext secret (not Key/value) like the following
+
+![create prefect secret](./doc/prefect_api_key_secret.png)
+
+and add the following policy to your `<cloud-id>-cluster_node_role` role:
+
+```
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Action": "secretsmanager:GetSecretValue",
+      "Resource": "<fill this out with the Secret ARN>"
+    }
+  ]
+}
+```
+
+You can then run the agent by specifying a `ANYSCALE_PREFECT_AWS_SECRET_ID` and
+`ANYSCALE_PREFECT_AWS_REGION` in your configuration yaml instead of the `PREFECT_API_KEY`,
+see the `ci/prefect-agent-service-awssecrets-ci.yaml` file in this repository for an example.
