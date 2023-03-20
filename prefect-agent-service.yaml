@@ -4,6 +4,8 @@ ray_serve_config:
   runtime_env:
     env_vars:
       PREFECT_API_URL: $PREFECT_API_URL
+      # Consider using a secret manager to store the PREFECT_API_KEY token
+      # (see instructions in README.md)
       PREFECT_API_KEY: $PREFECT_API_KEY
       ANYSCALE_PREFECT_QUEUE: test
     pip: ["prefect-anyscale"]

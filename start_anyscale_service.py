@@ -1,4 +1,4 @@
-import argparse
+import logging
 import os
 import subprocess
 
@@ -22,6 +22,7 @@ def get_prefect_secret_environment():
             "ANYSCALE_PREFECT_AWS_REGION": os.environ["ANYSCALE_PREFECT_AWS_REGION"],
         }
     else:
+        logging.warn("Your PREFECT_API_KEY is currently stored in plain text. Consider using a secret manager to store your secrets.")
         return {
             "PREFECT_API_KEY": os.environ["PREFECT_API_KEY"]
         }
