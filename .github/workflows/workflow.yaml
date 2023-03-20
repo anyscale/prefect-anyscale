@@ -29,7 +29,7 @@ jobs:
           role-to-assume: arn:aws:iam::959243851260:role/github-action-prefect-integration
           role-session-name: s3access
           aws-region: us-west-2
-      - name: Test Prefect <> Anyscale Integration
+      - name: Test Prefect <> Anyscale Integration (AWS secret manager)
         env:
           ANYSCALE_HOST: ${{ secrets.ANYSCALE_HOST }}
           ANYSCALE_CLI_TOKEN: ${{ secrets.ANYSCALE_CLI_TOKEN }}
@@ -37,6 +37,17 @@ jobs:
           PREFECT_API_KEY: ${{ secrets.PREFECT_API_KEY }}
         run: |
           pip install -e .
-          envsubst < ci/prefect-agent-service-awssecrets-ci.yaml > /tmp/prefect-agent-service.out
+          envsubst < ci/prefect-agent-service-awssecrets-ci.yaml > /tmp/prefect-agent-service-awssecrets.out
+          anyscale service deploy /tmp/prefect-agent-service-awssecrets.out
+          PYTHONPATH=$PYTHONPATH:. python ci/submit_prefect_run_and_check.py --queue test-awssecrets
+      - name: Test Prefect <> Anyscale Integration (PREFECT_API_KEY)
+        env:
+          ANYSCALE_HOST: ${{ secrets.ANYSCALE_HOST }}
+          ANYSCALE_CLI_TOKEN: ${{ secrets.ANYSCALE_CLI_TOKEN }}
+          PREFECT_API_URL: ${{ secrets.PREFECT_API_URL }}
+          PREFECT_API_KEY: ${{ secrets.PREFECT_API_KEY }}
+        run: |
+          pip install -e .
+          envsubst < ci/prefect-agent-service-ci.yaml > /tmp/prefect-agent-service.out
           anyscale service deploy /tmp/prefect-agent-service.out
-          PYTHONPATH=$PYTHONPATH:. python ci/submit_prefect_run_and_check.py
+          PYTHONPATH=$PYTHONPATH:. python ci/submit_prefect_run_and_check.py --queue test
