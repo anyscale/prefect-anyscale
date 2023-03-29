@@ -63,7 +63,7 @@ We now need to create an Anyscale Service file for deploying the Anyscale Prefec
 ```bash
 prefect config view --hide-sources
 ```
-and create a `prefect-agent-service.yaml` file where you *fill in the information* displayed above in place of the `...`:
+and create a `prefect-agent-service.yaml` file where you **fill in the information** displayed above in place of the `...`:
 ```yaml
 name: prefect-agent
 ray_serve_config:
