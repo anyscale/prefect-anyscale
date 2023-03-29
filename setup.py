@@ -2,7 +2,7 @@ from setuptools import find_packages, setup
 
 setup(
     name="prefect-anyscale",
-    version="0.1.0",
+    version="0.2.1",
     description="Prefect integrations with Anyscale.",
     license="Apache License 2.0",
     author="Anyscale, Inc.",

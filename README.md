@@ -63,7 +63,7 @@ We now need to create an Anyscale Service file for deploying the Anyscale Prefec
 ```bash
 prefect config view --hide-sources
 ```
-and create a `prefect-agent-service.yaml` file where you fill in the information just displayed in place of the `...`:
+and create a `prefect-agent-service.yaml` file where you **fill in the information** displayed above in place of the `...`:
 ```yaml
 name: prefect-agent
 ray_serve_config:
@@ -74,7 +74,7 @@ ray_serve_config:
       PREFECT_API_KEY: "..."
       ANYSCALE_PREFECT_QUEUE: test
     pip: ["prefect-anyscale"]
-    working_dir: https://github.com/anyscale/prefect-anyscale/archive/refs/tags/v0.2.0.zip
+    working_dir: https://github.com/anyscale/prefect-anyscale/archive/refs/tags/v0.2.1.zip
 ```
 
 **NOTE**: This will store your Prefect API token in the service
