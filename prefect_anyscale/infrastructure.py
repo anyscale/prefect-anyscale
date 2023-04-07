@@ -59,6 +59,9 @@ class AnyscaleJob(Infrastructure):
         if flow_run_id:
             cmd += " PREFECT__FLOW_RUN_ID={}".format(flow_run_id)
 
+        # Install runtime environment
+        cmd += " RAY_RUNTIME_ENV_HOOK=prefect_anyscale.prefect_runtime_environment_hook"
+
         cmd += " python -m prefect.engine"
 
         # Link the Job on the Anyscale UI with the prefect flow run
