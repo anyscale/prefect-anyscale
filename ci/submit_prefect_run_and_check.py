@@ -32,6 +32,7 @@ complex_deployment = prefect.deployments.Deployment.build_from_flow(
     work_queue_name=args.queue,
     storage=S3.load("test-storage-github"),
     infrastructure=AnyscaleJob.load("anyscale-job-infra"),
+    infra_overrides={"compute_config": "complex-test-compute-config"},
 )
 complex_deployment.apply()
 
