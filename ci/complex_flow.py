@@ -8,7 +8,7 @@ from prefect_ray import RayTaskRunner
 # is indeed synced to all nodes in the cluster.
 @ray.remote(resources={"custom_resource": 1})
 def remote_task():
-    from test_python_file import test
+    from ci.test_python_file import test
     return test()
 
 @task
