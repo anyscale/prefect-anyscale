@@ -1,4 +1,4 @@
-name: prefect-agent-27
+name: prefect-agent-28
 cloud: "anyscale_v2_default_cloud"
 ray_serve_config:
   import_path: start_anyscale_service:entrypoint
