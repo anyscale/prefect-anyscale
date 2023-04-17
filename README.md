@@ -175,9 +175,14 @@ see the `ci/prefect-agent-service-awssecrets-ci.yaml` file in this repository fo
 If you already have a setup with an existing Prefect agent working, you can use that agent
 to run the Prefect Anyscale integration.
 
-Make sure you have the `prefect_anyscale` package installed in the Prefect Agent's environment,
-you are logged into Prefect (or have set the `PREFECT_API_URL` and `PREFECT_API_KEY` environment
-variables set) and start the agent with
+First make sure you
+- Have the `prefect_anyscale` package installed in the Prefect Agent's environment and
+- Are logged into Prefect or have set the `PREFECT_API_URL` and `PREFECT_API_KEY` environment
+variables and
+- Are logged into Anyscale or have set the `ANYSCALE_HOST` and `ANYSCALE_CLI_TOKEN` environment
+variables
+
+Then start the agent with
 ```
 PREFECT_EXTRA_ENTRYPOINTS=prefect_anyscale prefect agent start -q <your prefect queue>
 ```
