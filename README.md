@@ -169,3 +169,18 @@ and add the following policy to your `<cloud-id>-cluster_node_role` role:
 You can then run the agent by specifying a `ANYSCALE_PREFECT_AWS_SECRET_ID` and
 `ANYSCALE_PREFECT_AWS_REGION` in your configuration yaml instead of the `PREFECT_API_KEY`,
 see the `ci/prefect-agent-service-awssecrets-ci.yaml` file in this repository for an example.
+
+### Using your own Prefect Agent
+
+If you already have a setup with an existing Prefect agent working, you can use that agent
+to run the Prefect Anyscale integration.
+
+Make sure you have the `prefect_anyscale` package installed in the Prefect Agent's environment,
+you are logged into Prefect (or have set the `PREFECT_API_URL` and `PREFECT_API_KEY` environment
+variables set) and start the agent with
+```
+PREFECT_EXTRA_ENTRYPOINTS=prefect_anyscale prefect agent start -q <your prefect queue>
+```
+
+The agent will listen to new work on the specified queue and will execute flows that run with
+the `AnyscaleJob` infra as Anyscale Jobs.
