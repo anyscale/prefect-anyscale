@@ -25,7 +25,7 @@ def count_to(highest_number):
 if __name__ == "__main__":
     count_to(10)
 ```
-inside your workspace and connect to Prefect via `prefect login`. Please *do not* use the Ray or Anyscale Client, i.e.
+inside your workspace and connect to Prefect via `prefect cloud login`. Please *do not* use the Ray or Anyscale Client, i.e.
 do not use the `RayTaskRunner(address="ray://...")` or `RayTaskRunner(address="anyscale://...")` since these can
 cause various issues (version mismatches between client and cluster, loosing connection, slower data transfer and API
 calls between client and server etc).
@@ -54,7 +54,7 @@ with the new token if that becomes necessary):
 
 ![set up prefect api token](./doc/prefect_api_token.png)
 
-From your laptop, then log into Prefect by running the following from your shell (substitute the API token you just generated):
+From your laptop or workspace, log into Prefect by running the following from your shell (substitute the API token you just generated):
 ```bash
 prefect cloud login -k pnu_XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
 ```
@@ -86,11 +86,19 @@ another secret manager of your choice) and retrieve it from there in
 The `working_dir` contains the version of the Anyscale Prefect agent, which you can upgrade going forward as new versions are released.
 You can then start the service with
 ```bash
-anyscale service deploy prefect-agent-service.yaml
+anyscale service rollout -f prefect-agent-service.yaml
 ```
 
-Now create a Prefect infrastructure that will be used to run the deployments inside of Anyscale. You can do this
-by running `pip install prefect-anyscale` and then in a Python interpreter
+Because the Prefect Deployment has multiple Python dependencies, please create an Anyscale Cluster Environment with these
+pre-installed. The following are required:
+- s3fs
+- prefect-anyscale
+
+An example cluster environment definition file is included in this repo.
+You can build this by running the anyscale cli command: `anyscale cluster-env build anyscale-cluster_env_prefect_jobs.yaml --name <cluster_env name>`
+
+Now create a test Prefect infrastructure. This will be used to run the deployments inside of Anyscale. You can do this
+by running `pip install prefect-anyscale` - then in a Python interpreter
 ```python
 import prefect_anyscale
 infra = prefect_anyscale.AnyscaleJob(cluster_env="prefect-test-environment")
@@ -117,11 +125,22 @@ deployment = prefect.deployments.Deployment.build_from_flow(
 deployment.apply()
 ```
 
+Please note that the Prefect deployment must use a Prefect S3 block.
+
 You can now schedule new runs with this deployment from the Prefect UI
 
 ![submit prefect run](./doc/prefect_submit_run.png)
 
 and it will be executed as an Anyscale Job on an autoscaling Ray Cluster which has the same setup as the development setup described above.
+
+#### Anyscale Job Cluster Environment
+The Anyscale Job Cluster Environment has a dependency on the anyscale-prefect pip package. You can build a custom cluster environment that meets the requirements with:
+```yaml
+base_image: anyscale/ray:2.3.1-py39
+python:
+  pip_packages:
+    - prefect-anyscale
+```
 
 #### Overriding properties of the infra block
 

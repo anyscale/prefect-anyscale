@@ -1,0 +1,5 @@
+base_image: anyscale/ray:2.3.1-py39
+python:
+  pip_packages:
+    - prefect-anyscale
+    - s3fs
