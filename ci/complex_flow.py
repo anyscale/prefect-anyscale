@@ -33,8 +33,8 @@ def anyscale_job(args):
         }
     }
 
-    with tempfile.NamedTemporaryFile() as f:
-        f.write(yaml.dumps(job_config))
+    with tempfile.NamedTemporaryFile(mode="w") as f:
+        yaml.dump(job_config, f)
         f.flush()
         # Submit an Anyscale Job from Prefect and stream the logs
         subprocess.check_output(["anyscale", "job", "submit", f.name, "--follow"])
