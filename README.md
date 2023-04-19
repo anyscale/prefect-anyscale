@@ -30,7 +30,40 @@ do not use the `RayTaskRunner(address="ray://...")` or `RayTaskRunner(address="a
 cause various issues (version mismatches between client and cluster, loosing connection, slower data transfer and API
 calls between client and server etc).
 
-## Production Setup
+## Running Anyscale Jobs as part of a larger Prefect flow
+
+You can run Anyscale Jobs as part of a Prefect flow like this:
+```python
+from anyscale.controllers.job_controller import JobController
+from anyscale import AnyscaleSDK, 
+from prefect import flow, task
+
+@task
+def execute_anyscale_job(params):
+    sdk = AnyscaleSDK()
+    job = sdk.create_job(CreateProductionJob(
+        name = "my-anyscale-job",
+        description = "An Anyscale Job submitted from Prefect.",
+        config= {
+            "runtime_env": {
+                "working_dir": ".",
+                "upload_dir": "<path to your S3 bucket where the code should be stored>",
+            },
+            "entrypoint": "python my_job_script.py ",
+        }
+    ))
+    # Stream the Job logs into Prefect
+    JobController().logs(job.id, should_follow=True)
+
+@flow
+def flow_with_anyscale_job():
+    execute_anyscale_job.submit({})
+
+if __name__ == "__main__":
+    flow_with_anyscale_job()
+```
+
+## Using Anyscale as the compute infrastructure for Prefect workloads
 
 This repository is providing an integration between Anyscale and Prefect for production scenarios, where you
 want to submit your experiments from the Prefect UI and have them run in Anyscale. It uses
