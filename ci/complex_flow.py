@@ -1,8 +1,8 @@
-import ray
+import subprocess
+import tempfile
+import yaml
 
-from anyscale import AnyscaleSDK
-from anyscale.controllers.job_controller import JobController
-from anyscale.sdk.anyscale_client import CreateProductionJob
+import ray
 
 from prefect import flow, task
 from prefect_ray import RayTaskRunner
@@ -21,21 +21,23 @@ def test_task():
 
 @task
 def anyscale_job(args):
-    # Submit an Anyscale Job from Prefect
-    sdk = AnyscaleSDK()
-    job = sdk.create_job(CreateProductionJob(
-        name = "my-anyscale-job",
-        description = "An Anyscale Job submitted from Prefect.",
-        config= {
+    job_config = {
+        "name": "my-anyscale-job",
+        "description": "An Anyscale Job submitted from Prefect.",
+        "config": {
             "runtime_env": {
                 "working_dir": ".",
                 "upload_dir": "s3://anyscale-prefect-integration-test/github-working-dir/",
             },
             "entrypoint": "python anyscale_job.py " + " ".join([f"--{key} {val}" for key, val in args.items()]),
         }
-    ))
-    # Stream the Job logs into Prefect and fail if the job fails
-    JobController().logs(job.id, should_follow=True)
+    }
+
+    with tempfile.NamedTemporaryFile() as f:
+        f.write(yaml.dumps(job_config))
+        f.flush()
+        # Submit an Anyscale Job from Prefect and stream the logs
+        subprocess.check_output(["anyscale", "job", "submit", f.name, "--follow"])
 
 @flow(task_runner=RayTaskRunner)
 def complex_flow():
