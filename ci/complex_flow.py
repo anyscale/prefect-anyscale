@@ -5,7 +5,7 @@ import yaml
 
 import ray
 
-from prefect import flow, task
+from prefect import flow, task, get_run_logger
 from prefect_ray import RayTaskRunner
 
 # This custom resource will cause another node to be added
@@ -37,10 +37,12 @@ def anyscale_job(args):
     with tempfile.NamedTemporaryFile(mode="w") as f:
         yaml.dump(job_config, f)
         f.flush()
-        # Submit an Anyscale Job from Prefect and stream the logs
-        subprocess.run(
+        # Submit an Anyscale Job from Prefect and record the logs
+        output = subprocess.check_output(
             ["anyscale", "job", "submit", f.name, "--follow"]
         )
+        logger = get_run_logger()
+        logger.info("Anyscale Job output: " + output.decode())
 
 @flow(task_runner=RayTaskRunner)
 def complex_flow():
