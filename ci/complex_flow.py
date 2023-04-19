@@ -28,10 +28,10 @@ def anyscale_job(args):
         "description": "An Anyscale Job submitted from Prefect.",
         "cluster_env": "default_cluster_env_2.3.1_py39",
         "runtime_env": {
-            "working_dir": ".",
+            "working_dir": "ci/",
             "upload_path": "s3://anyscale-prefect-integration-test/working-dir/",
         },
-        "entrypoint": "python ci/anyscale_job.py " + " ".join([f"--{key} {val}" for key, val in args.items()]),
+        "entrypoint": "python anyscale_job.py " + " ".join([f"--{key} {val}" for key, val in args.items()]),
     }
 
     with tempfile.NamedTemporaryFile(mode="w") as f:
