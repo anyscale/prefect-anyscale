@@ -30,7 +30,7 @@ def anyscale_job(args):
             "working_dir": ".",
             "upload_path": "s3://anyscale-prefect-integration-test/github-working-dir/",
         },
-        "entrypoint": "python anyscale_job.py " + " ".join([f"--{key} {val}" for key, val in args.items()]),
+        "entrypoint": "python ci/anyscale_job.py " + " ".join([f"--{key} {val}" for key, val in args.items()]),
     }
 
     with tempfile.NamedTemporaryFile(mode="w") as f:
