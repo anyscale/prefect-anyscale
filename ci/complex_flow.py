@@ -1,3 +1,4 @@
+import os
 import subprocess
 import tempfile
 import yaml
@@ -37,7 +38,10 @@ def anyscale_job(args):
         yaml.dump(job_config, f)
         f.flush()
         # Submit an Anyscale Job from Prefect and stream the logs
-        subprocess.check_output(["anyscale", "job", "submit", f.name, "--follow"])
+        subprocess.check_output(
+            ["anyscale", "job", "submit", f.name, "--follow"],
+            env=dict(os.environ, ANYSCALE_CLI_INTERACTIVE_UX="0")
+        )
 
 @flow(task_runner=RayTaskRunner)
 def complex_flow():
