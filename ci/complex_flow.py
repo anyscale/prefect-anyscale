@@ -39,7 +39,7 @@ def anyscale_job(args):
         f.flush()
         # Submit an Anyscale Job from Prefect and stream the logs
         subprocess.check_output(
-            ["anyscale", "job", "submit", f.name, "--follow"]
+            ["anyscale", "job", "submit", f.name, "--follow"], stderr=subprocess.STDOUT
         )
 
 @flow(task_runner=RayTaskRunner)
