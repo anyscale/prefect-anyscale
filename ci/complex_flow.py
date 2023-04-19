@@ -24,6 +24,7 @@ def anyscale_job(args):
     job_config = {
         "name": "my-anyscale-job",
         "description": "An Anyscale Job submitted from Prefect.",
+        "cluster_env": "default_cluster_env_2.4.0_py39",
         "config": {
             "runtime_env": {
                 "working_dir": ".",
