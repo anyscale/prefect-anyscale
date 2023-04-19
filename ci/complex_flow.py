@@ -26,7 +26,7 @@ def anyscale_job(args):
         "name": "my-anyscale-job",
         "cloud": "anyscale_v2_default_cloud",
         "description": "An Anyscale Job submitted from Prefect.",
-        "cluster_env": "default_cluster_env_2.4.0_py39",
+        "cluster_env": "default_cluster_env_2.3.1_py39",
         "runtime_env": {
             "working_dir": ".",
             "upload_path": "s3://anyscale-prefect-integration-test/working-dir/",
@@ -39,8 +39,7 @@ def anyscale_job(args):
         f.flush()
         # Submit an Anyscale Job from Prefect and stream the logs
         subprocess.check_output(
-            ["anyscale", "job", "submit", f.name, "--follow"],
-            env=dict(os.environ, ANYSCALE_CLI_INTERACTIVE_UX="0")
+            ["anyscale", "job", "submit", f.name, "--follow"]
         )
 
 @flow(task_runner=RayTaskRunner)
