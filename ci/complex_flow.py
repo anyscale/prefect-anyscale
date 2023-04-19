@@ -27,7 +27,7 @@ def anyscale_job(args):
         "cluster_env": "default_cluster_env_2.4.0_py39",
         "runtime_env": {
             "working_dir": ".",
-            "upload_dir": "s3://anyscale-prefect-integration-test/github-working-dir/",
+            "upload_path": "s3://anyscale-prefect-integration-test/github-working-dir/",
         },
         "entrypoint": "python anyscale_job.py " + " ".join([f"--{key} {val}" for key, val in args.items()]),
     }
