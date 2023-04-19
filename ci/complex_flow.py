@@ -23,6 +23,7 @@ def test_task():
 def anyscale_job(args):
     job_config = {
         "name": "my-anyscale-job",
+        "cloud": "anyscale_v2_default_cloud",
         "description": "An Anyscale Job submitted from Prefect.",
         "cluster_env": "default_cluster_env_2.4.0_py39",
         "runtime_env": {
