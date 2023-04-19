@@ -34,8 +34,10 @@ calls between client and server etc).
 
 You can run Anyscale Jobs as part of a Prefect flow like this:
 ```python
+from anyscale import AnyscaleSDK
 from anyscale.controllers.job_controller import JobController
-from anyscale import AnyscaleSDK, 
+from anyscale.sdk.anyscale_client import CreateProductionJob
+
 from prefect import flow, task
 
 @task
