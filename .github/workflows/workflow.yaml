@@ -38,7 +38,7 @@ jobs:
         run: |
           pip install -e .
           envsubst < ci/prefect-agent-service-awssecrets-ci.yaml > /tmp/prefect-agent-service-awssecrets.out
-          anyscale service rollout /tmp/prefect-agent-service-awssecrets.out
+          anyscale service rollout -f /tmp/prefect-agent-service-awssecrets.out
           PYTHONPATH=$PYTHONPATH:. python ci/submit_prefect_run_and_check.py --queue test-awssecrets
       - name: Test Prefect <> Anyscale Integration (PREFECT_API_KEY)
         env:
@@ -49,6 +49,6 @@ jobs:
         run: |
           pip install -e .
           envsubst < ci/prefect-agent-service-ci.yaml > /tmp/prefect-agent-service.out
-          anyscale service rollout /tmp/prefect-agent-service.out
+          anyscale service rollout -f /tmp/prefect-agent-service.out
           PYTHONPATH=$PYTHONPATH:. python ci/submit_prefect_run_and_check.py --queue test
           PYTHONPATH=$PYTHONPATH:. python ci/test_ray_job_integration.py
