@@ -11,7 +11,6 @@ from typing_extensions import Literal
 
 
 class AnyscaleJob(Infrastructure):
-
     type: Literal["anyscale-job"] = Field(
         default="anyscale-job", description="The type of infrastructure."
     )
@@ -25,18 +24,23 @@ class AnyscaleJob(Infrastructure):
         description="Cluster environment to use for the execution of the job."
     )
 
+    project_id: str = Field(
+        description="The project id to use for the execution of the job.", default=None
+    )
+
     _block_type_name = "Anyscale Job"
 
     def preview(self):
         return " \\\n".join(
             "compute_config = " + str(self.compute_config),
             "cluster_env = " + str(self.cluster_env),
+            "project_id = " + str(self.project_id),
         )
 
     @sync_compatible
     async def run(
         self,
-        task_status = None,
+        task_status=None,
     ):
         env = self._get_environment_variables()
         api_url = env.get("PREFECT_API_URL")
@@ -52,9 +56,13 @@ class AnyscaleJob(Infrastructure):
             # If we use the AWS secret manager to pass the PREFECT_API_KEY
             # through, we will retrieve the API key when the job gets executed.
             aws_region = env.get("ANYSCALE_PREFECT_AWS_REGION")
-            cmd += " PREFECT_API_KEY=`aws secretsmanager get-secret-value --secret-id {} --region {} --output=text --query=SecretString`".format(aws_secret_id, aws_region)
+            cmd += " PREFECT_API_KEY=`aws secretsmanager get-secret-value --secret-id {} --region {} --output=text --query=SecretString`".format(
+                aws_secret_id, aws_region
+            )
         elif api_key:
-            logging.warn("Your PREFECT_API_KEY is currently stored in plain text. Consider using a secret manager to store your secrets.")
+            logging.warn(
+                "Your PREFECT_API_KEY is currently stored in plain text. Consider using a secret manager to store your secrets."
+            )
             cmd += " PREFECT_API_KEY={}".format(api_key)
         if flow_run_id:
             cmd += " PREFECT__FLOW_RUN_ID={}".format(flow_run_id)
@@ -70,13 +78,18 @@ class AnyscaleJob(Infrastructure):
         content = """
 name: "{}"
 entrypoint: "{}"
-""".format(job_name, cmd)
+""".format(
+            job_name, cmd
+        )
 
         if self.compute_config:
             content += 'compute_config: "{}"\n'.format(self.compute_config)
 
         if self.cluster_env:
             content += 'cluster_env: "{}"\n'.format(self.cluster_env)
+
+        if self.project_id:
+            content += 'project_id: "{}"\n'.format(self.project_id)
 
         if task_status:
             task_status.started(job_name)
@@ -87,9 +100,7 @@ entrypoint: "{}"
             logging.info(f"Submitting Anyscale Job with configuration '{content}'")
             returncode = subprocess.check_call(["anyscale", "job", "submit", f.name])
 
-        return AnyscaleJobResult(
-            status_code=returncode, identifier=""
-        )
+        return AnyscaleJobResult(status_code=returncode, identifier="")
 
     def _get_environment_variables(self, include_os_environ: bool = True):
         os_environ = os.environ if include_os_environ else {}
@@ -100,6 +111,8 @@ entrypoint: "{}"
         # Drop null values allowing users to "unset" variables
         return {key: value for key, value in env.items() if value is not None}
 
+
 class AnyscaleJobResult(InfrastructureResult):
     """Contains information about the final state of a completed process"""
+
     pass
