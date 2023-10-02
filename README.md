@@ -30,7 +30,49 @@ do not use the `RayTaskRunner(address="ray://...")` or `RayTaskRunner(address="a
 cause various issues (version mismatches between client and cluster, loosing connection, slower data transfer and API
 calls between client and server etc).
 
-## Production Setup
+## Running Anyscale Jobs as part of a larger Prefect flow
+
+You can run Anyscale Jobs as part of a Prefect flow like this:
+```python
+import os
+import subprocess
+import tempfile
+import yaml
+
+from prefect import flow, task, get_run_logger
+
+@task
+def execute_anyscale_job(args):
+    job_config = {
+        "name": "my-anyscale-job",
+        "description": "An Anyscale Job submitted from Prefect.",
+        "cluster_env": "default_cluster_env_2.3.1_py39",
+        "runtime_env": {
+            "working_dir": ".",
+            "upload_path": "<path to your S3 bucket where the code should be stored>",
+        },
+        "entrypoint": "python my_job_script.py " + " ".join([f"--{key} {val}" for key, val in args.items()]),
+    }
+
+    with tempfile.NamedTemporaryFile(mode="w") as f:
+        yaml.dump(job_config, f)
+        f.flush()
+        # Submit an Anyscale Job from Prefect and record the logs
+        output = subprocess.check_output(
+            ["anyscale", "job", "submit", f.name, "--follow"]
+        )
+        logger = get_run_logger()
+        logger.info("Anyscale Job output: " + output.decode())
+
+@flow
+def flow_with_anyscale_job():
+    execute_anyscale_job.submit({"arg": "value"})
+
+if __name__ == "__main__":
+    flow_with_anyscale_job()
+```
+
+## Using Anyscale as the compute infrastructure for Prefect workloads
 
 This repository is providing an integration between Anyscale and Prefect for production scenarios, where you
 want to submit your experiments from the Prefect UI and have them run in Anyscale. It uses
@@ -63,13 +105,18 @@ We now need to create an Anyscale Service file for deploying the Anyscale Prefec
 ```bash
 prefect config view --hide-sources
 ```
-and create a `prefect-agent-service.yaml` file where you fill in the information just displayed in place of the `...`:
+and create a `prefect-agent-service.yaml` file where you **fill in the information** displayed above in place of the `...`:
 ```yaml
 name: prefect-agent
-entrypoint: pip install prefect-anyscale && PREFECT_API_URL="https://api.prefect.cloud/api/accounts/..." PREFECT_API_KEY="..." python start_anyscale_service.py --queue test
-runtime_env:
-  working_dir: https://github.com/anyscale/prefect-anyscale/archive/refs/tags/v0.1.0.zip
-healthcheck_url: "/healthcheck"
+ray_serve_config:
+  import_path: start_anyscale_service:entrypoint
+  runtime_env:
+    env_vars:
+      PREFECT_API_URL: "https://api.prefect.cloud/api/accounts/..."
+      PREFECT_API_KEY: "..."
+      ANYSCALE_PREFECT_QUEUE: test
+    pip: ["prefect-anyscale"]
+    working_dir: https://github.com/anyscale/prefect-anyscale/archive/refs/tags/v0.2.1.zip
 ```
 
 **NOTE**: This will store your Prefect API token in the service
@@ -117,3 +164,70 @@ You can now schedule new runs with this deployment from the Prefect UI
 ![submit prefect run](./doc/prefect_submit_run.png)
 
 and it will be executed as an Anyscale Job on an autoscaling Ray Cluster which has the same setup as the development setup described above.
+
+#### Overriding properties of the infra block
+
+You can override properties of the Anyscale infra block in a deployment like this
+
+```python
+import prefect
+from prefect.filesystems import S3
+from prefect_anyscale import AnyscaleJob
+
+from prefect_test import count_to
+
+deployment = prefect.deployments.Deployment.build_from_flow(
+    flow=count_to,
+    name="prefect_test_custom",
+    work_queue_name="test",
+    storage=S3.load("test-storage"),
+    infrastructure=AnyscaleJob.load("test-infra"),
+    infra_overrides={"compute_config": "test-compute-config"}
+)
+deployment.apply()
+```
+#### Using the AWS Secrets Manager for storing the PREFECT_API_KEY
+
+We recommend using the AWS Secrets Manager for storing your PREFECT_API_KEY token. Store your
+`PREFECT_API_KEY` secret as a Plaintext secret (not Key/value) like the following
+
+![create prefect secret](./doc/prefect_api_key_secret.png)
+
+and add the following policy to your `<cloud-id>-cluster_node_role` role:
+
+```
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Action": "secretsmanager:GetSecretValue",
+      "Resource": "<fill this out with the Secret ARN>"
+    }
+  ]
+}
+```
+
+You can then run the agent by specifying a `ANYSCALE_PREFECT_AWS_SECRET_ID` and
+`ANYSCALE_PREFECT_AWS_REGION` in your configuration yaml instead of the `PREFECT_API_KEY`,
+see the `ci/prefect-agent-service-awssecrets-ci.yaml` file in this repository for an example.
+
+### Using your own Prefect Agent
+
+If you already have a setup with an existing Prefect agent working, you can use that agent
+to run the Prefect Anyscale integration.
+
+First make sure you
+- Have the `prefect_anyscale` package installed in the Prefect Agent's environment and
+- Are logged into Prefect or have set the `PREFECT_API_URL` and `PREFECT_API_KEY` environment
+variables and
+- Are logged into Anyscale or have set the `ANYSCALE_HOST` and `ANYSCALE_CLI_TOKEN` environment
+variables
+
+Then start the agent with
+```
+PREFECT_EXTRA_ENTRYPOINTS=prefect_anyscale prefect agent start -q <your prefect queue>
+```
+
+The agent will listen to new work on the specified queue and will execute flows that run with
+the `AnyscaleJob` infra as Anyscale Jobs.

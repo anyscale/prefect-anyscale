@@ -56,23 +56,34 @@ class AnyscaleJob(AnyscaleInfrastructure):
         api_key = env.get("PREFECT_API_KEY")
         flow_run_id = env.get("PREFECT__FLOW_RUN_ID")
 
+        aws_secret_id = env.get("ANYSCALE_PREFECT_AWS_SECRET_ID")
+
         cmd = ""
         if api_url:
             cmd += "PREFECT_API_URL={}".format(api_url)
-        if api_key:
+        if aws_secret_id:
+            # If we use the AWS secret manager to pass the PREFECT_API_KEY
+            # through, we will retrieve the API key when the job gets executed.
+            aws_region = env.get("ANYSCALE_PREFECT_AWS_REGION")
+            cmd += " PREFECT_API_KEY=`aws secretsmanager get-secret-value --secret-id {} --region {} --output=text --query=SecretString`".format(aws_secret_id, aws_region)
+        elif api_key:
+            logging.warn("Your PREFECT_API_KEY is currently stored in plain text. Consider using a secret manager to store your secrets.")
             cmd += " PREFECT_API_KEY={}".format(api_key)
         if flow_run_id:
             cmd += " PREFECT__FLOW_RUN_ID={}".format(flow_run_id)
 
-        cmd += " /home/ray/anaconda3/bin/python -m prefect.engine"
+        # Install runtime environment
+        cmd += " RAY_RUNTIME_ENV_HOOK=prefect_anyscale.prefect_runtime_environment_hook"
+
+        cmd += " python -m prefect.engine"
 
         # Link the Job on the Anyscale UI with the prefect flow run
         job_name = "prefect-job-" + flow_run_id
 
         content = """
-        name: "{}"
-        entrypoint: "{}"
-        """.format(job_name, cmd)
+name: "{}"
+entrypoint: "{}"
+""".format(job_name, cmd)
 
         if self.compute_config:
             content += 'compute_config: "{}"\n'.format(self.compute_config)
@@ -80,14 +91,14 @@ class AnyscaleJob(AnyscaleInfrastructure):
         if self.cluster_env:
             content += 'cluster_env: "{}"\n'.format(self.cluster_env)
 
+        if task_status:
+            task_status.started(job_name)
+
         with tempfile.NamedTemporaryFile(mode="w") as f:
             f.write(content)
             f.flush()
             logging.info(f"Submitting Anyscale Job with configuration '{content}'")
             returncode = subprocess.check_call(["anyscale", "job", "submit", f.name])
-
-        if task_status:
-            task_status.started(job_name)
 
         return AnyscaleJobResult(
             status_code=returncode, identifier=""
