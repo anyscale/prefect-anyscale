@@ -3,6 +3,7 @@ cloud: "anyscale_v2_default_cloud"
 ray_serve_config:
   import_path: start_anyscale_service:entrypoint
   runtime_env:
+    pip: [s3fs]
     env_vars:
       PREFECT_API_URL: $PREFECT_API_URL
       PREFECT_API_KEY: $PREFECT_API_KEY
