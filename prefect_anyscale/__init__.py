@@ -1,4 +1,4 @@
-from prefect_anyscale.infrastructure import AnyscaleJob
+from prefect_anyscale.infrastructure import AnyscaleJob, RayJob
 
 
 def prefect_runtime_environment_hook(runtime_env):
@@ -18,5 +18,6 @@ def prefect_runtime_environment_hook(runtime_env):
         
 __all__ = [
     "AnyscaleJob",
+    "RayJob",
     "prefect_runtime_environment_hook",
 ]

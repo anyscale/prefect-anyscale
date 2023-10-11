@@ -1,5 +1,6 @@
-name: prefect-agent-28
+name: prefect-agent-30
 cloud: "anyscale_v2_default_cloud"
+cluster_env: prefect-agent
 ray_serve_config:
   import_path: start_anyscale_service:entrypoint
   runtime_env:
