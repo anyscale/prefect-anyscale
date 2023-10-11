@@ -1,9 +1,9 @@
-name: prefect-agent-29
+name: prefect-agent-30
 cloud: "anyscale_v2_default_cloud"
+cluster_env: prefect-agent
 ray_serve_config:
   import_path: start_anyscale_service:entrypoint
   runtime_env:
-    pip: [prefect, prefect_ray, s3fs]
     env_vars:
       PREFECT_API_URL: $PREFECT_API_URL
       PREFECT_API_KEY: $PREFECT_API_KEY
