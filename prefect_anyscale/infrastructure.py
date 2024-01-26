@@ -6,7 +6,14 @@ import tempfile
 
 from prefect.infrastructure.base import Infrastructure, InfrastructureResult
 from prefect.utilities.asyncutils import sync_compatible
-from pydantic import Field
+
+from pydantic.version import VERSION as _PYDANTIC_VERSION
+
+if _PYDANTIC_VERSION.startswith("2."):
+    from pydantic.v1 import Field
+else:
+    from pydantic import Field
+
 from ray.job_submission import JobSubmissionClient
 from typing_extensions import Literal
 
