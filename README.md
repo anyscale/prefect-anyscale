@@ -1,5 +1,12 @@
 # Prefect Integration with Anyscale
 
+> [!WARNING]
+> This integration supports Prefect 2.x only. It does not work with Prefect 3, which removed
+> the agent and infrastructure API that it uses. The package is not actively maintained.
+>
+> `pip install prefect-anyscale` installs the latest Prefect, so pin Prefect 2:
+> `pip install prefect-anyscale "prefect<3"`.
+
 This repository contains the integration of Prefect with Anyscale.
 
 ## Development Setup
